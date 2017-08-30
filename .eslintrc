@@ -1,6 +1,5 @@
-{
-  "extends": [
-    "metalab",
-    "metalab/react"
-  ]
-}
+extends:
+  - metalab
+  - metalab/react
+env:
+  browser: true
