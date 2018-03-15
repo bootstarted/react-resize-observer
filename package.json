@@ -18,7 +18,7 @@
     "build": "./node_modules/.bin/babel --copy-files -s -d lib src",
     "copy": "./node_modules/.bin/ncp src lib && ./node_modules/.bin/renamer --regex --find '$' --replace '.flow' 'lib/**/*.js'",
     "prepublish": "npm run clean && npm run copy && npm run build",
-    "test": "npm run lint",
+    "test": "npm run lint && npm run flow",
     "flow": "./node_modules/.bin/flow .",
     "lint": "./node_modules/.bin/eslint ."
   },
