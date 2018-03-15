@@ -5,7 +5,6 @@
 // Import modules.
 // =============================================================================
 import React from 'react';
-import {findDOMNode} from 'react-dom';
 
 const style = {
   position: 'absolute',
@@ -131,17 +130,12 @@ class ResizeObserver extends React.Component<Props> {
     super(props, context);
     (this: any)._handleScroll = this._handleScroll.bind(this);
     (this: any)._reflow = this._reflow.bind(this);
+    (this: any)._handleRef = this._handleRef.bind(this);
     (this: any)._handleExpandRef = this._handleExpandRef.bind(this);
     (this: any)._handleShrinkRef = this._handleShrinkRef.bind(this);
   }
 
   componentDidMount() {
-    const node = findDOMNode(this);
-
-    if (node instanceof HTMLElement) {
-      this._node = node;
-    }
-
     this._reflow();
 
     this._removeScroll = ResizeObserver.addScrollListener(this._handleScroll);
@@ -251,6 +245,10 @@ class ResizeObserver extends React.Component<Props> {
     }
   }
 
+  _handleRef(node: HTMLElement | null) {
+    this._node = node;
+  }
+
   _handleExpandRef(node: HTMLElement | null) {
     this._reset(node);
     this._expandRef = node;
@@ -264,7 +262,7 @@ class ResizeObserver extends React.Component<Props> {
   render() {
     if (this.props.onResize || this.props.onReflow) {
       return (
-        <div style={style}>
+        <div style={style} ref={this._handleRef}>
           <div ref={this._handleExpandRef} style={style}>
             <div style={{...styleChild, width: 100000, height: 100000}}/>
           </div>
