@@ -273,7 +273,7 @@ class ResizeObserver extends React.Component<Props> {
       );
     }
 
-    return <noscript/>;
+    return <noscript ref={this._handleRef}/>;
   }
 }
 
