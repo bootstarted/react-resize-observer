@@ -1,8 +1,13 @@
 [ignore]
-
+.*\.flow
 [include]
 
 [libs]
 
+[lints]
+all=error
+
 [options]
 emoji=true
+include_warnings=true
+suppress_comment=\\(.\\|\n\\)*\\$ExpectError

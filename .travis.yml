@@ -1,14 +1,9 @@
-language: node_js
-
-node_js:
-  - "8"
-
 sudo: false
+language: node_js
+matrix:
+  include:
+    - node_js: '8'
+    - node_js: '10'
 
-cache:
-  directories:
-    - ".eslintcache"
-    - "node_modules"
-
-script:
-  - npm run test
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

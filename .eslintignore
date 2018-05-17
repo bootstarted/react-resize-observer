@@ -1,3 +1,8 @@
+/flow-typed
+/*.js
+match/**/*
+internal/**/*
+test/*.js
 lib/**/*
 node_modules
-example
+/coverage
