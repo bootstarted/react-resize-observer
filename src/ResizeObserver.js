@@ -1,6 +1,5 @@
 // @flow
 /* eslint-disable complexity */
-/* flowlint unclear-type: off */
 
 // =============================================================================
 // Import modules.
@@ -25,7 +24,7 @@ const styleChild = {
   transition: '0s',
 };
 
-function isAncestor(node: Object, ancestor: Object) {
+function isAncestor(node: Node, ancestor: Node) {
   let current = node.parentNode;
 
   while (current) {
@@ -129,16 +128,7 @@ class ResizeObserver extends React.Component<Props> {
   _lastHeight: ?number;
   _removeResize: ?() => void;
   _removeScroll: ?() => void;
-  _lastRect: Object = {};
-
-  constructor(props: Props, context: any) {
-    super(props, context);
-    (this: any)._handleScroll = this._handleScroll.bind(this);
-    (this: any)._reflow = this._reflow.bind(this);
-    (this: any)._handleRef = this._handleRef.bind(this);
-    (this: any)._handleExpandRef = this._handleExpandRef.bind(this);
-    (this: any)._handleShrinkRef = this._handleShrinkRef.bind(this);
-  }
+  _lastRect: ClientRect;
 
   componentDidMount() {
     this._reflow();
@@ -174,7 +164,7 @@ class ResizeObserver extends React.Component<Props> {
     }
   }
 
-  _handleScroll(event: Event) {
+  _handleScroll = (event: Event) => {
     if (
       (this.props.onPosition || this.props.onReflow || this.props.onResize) &&
       (this._globalScollTarget(event.target) ||
@@ -183,21 +173,25 @@ class ResizeObserver extends React.Component<Props> {
     ) {
       this._reflow();
     }
-  }
+  };
 
-  _globalScollTarget(target: EventTarget) {
+  _globalScollTarget = (target: EventTarget) => {
     return (
+      target instanceof Node &&
       (this.props.onPosition || this.props.onReflow) &&
       (target === document ||
         target === document.documentElement ||
         target === document.body)
     );
-  }
+  };
 
-  _refScrollTarget(target: EventTarget) {
-    if (target === this._expandRef || target === this._shrinkRef) {
-      const width = (target: any).offsetWidth;
-      const height = (target: any).offsetHeight;
+  _refScrollTarget = (target: EventTarget) => {
+    if (
+      target instanceof HTMLElement &&
+      (target === this._expandRef || target === this._shrinkRef)
+    ) {
+      const width = target.offsetWidth;
+      const height = target.offsetHeight;
 
       if (width !== this._lastWidth || height !== this._lastHeight) {
         this._lastWidth = width;
@@ -208,27 +202,33 @@ class ResizeObserver extends React.Component<Props> {
       }
     }
     return false;
-  }
+  };
 
-  _ancestorScollTarget(target: EventTarget) {
+  _ancestorScollTarget = (target: EventTarget) => {
     return (
+      target instanceof Node &&
       (this.props.onPosition || this.props.onReflow) &&
       this._node &&
       isAncestor(this._node, target)
     );
-  }
+  };
 
-  _reflow() {
+  _reflow = () => {
     if (!this._node || !(this._node.parentNode instanceof Element)) return;
 
     const rect = this._node.parentNode.getBoundingClientRect();
 
-    const sizeChanged =
-      rect.width !== this._lastRect.width ||
-      rect.height !== this._lastRect.height;
+    let sizeChanged = false;
+    let positionChanged = false;
 
-    const positionChanged =
-      rect.top !== this._lastRect.top || rect.left !== this._lastRect.left;
+    if (this._lastRect) {
+      sizeChanged =
+        rect.width !== this._lastRect.width ||
+        rect.height !== this._lastRect.height;
+
+      positionChanged =
+        rect.top !== this._lastRect.top || rect.left !== this._lastRect.left;
+    }
 
     this._lastRect = rect;
 
@@ -243,7 +243,7 @@ class ResizeObserver extends React.Component<Props> {
     if ((sizeChanged || positionChanged) && this.props.onReflow) {
       this.props.onReflow(rect);
     }
-  }
+  };
 
   _reset(node: HTMLElement | null) {
     if (node) {
@@ -252,19 +252,19 @@ class ResizeObserver extends React.Component<Props> {
     }
   }
 
-  _handleRef(node: HTMLElement | null) {
+  _handleRef = (node: HTMLElement | null) => {
     this._node = node;
-  }
+  };
 
-  _handleExpandRef(node: HTMLElement | null) {
+  _handleExpandRef = (node: HTMLElement | null) => {
     this._reset(node);
     this._expandRef = node;
-  }
+  };
 
-  _handleShrinkRef(node: HTMLElement | null) {
+  _handleShrinkRef = (node: HTMLElement | null) => {
     this._reset(node);
     this._shrinkRef = node;
-  }
+  };
 
   render() {
     if (this.props.onResize || this.props.onReflow) {
