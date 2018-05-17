@@ -218,8 +218,8 @@ class ResizeObserver extends React.Component<Props> {
 
     const rect = this._node.parentNode.getBoundingClientRect();
 
-    let sizeChanged = false;
-    let positionChanged = false;
+    let sizeChanged = true;
+    let positionChanged = true;
 
     if (this._lastRect) {
       sizeChanged =
