@@ -1,5 +1,6 @@
 // @flow
 /* eslint-disable complexity */
+/* flowlint unclear-type: off */
 
 // =============================================================================
 // Import modules.
@@ -77,14 +78,16 @@ class ResizeObserver extends React.Component<Props> {
 
       subscribed = false;
 
-      ResizeObserver._scrollListeners
-        .splice(ResizeObserver._scrollListeners.indexOf(listener), 1);
+      ResizeObserver._scrollListeners.splice(
+        ResizeObserver._scrollListeners.indexOf(listener),
+        1,
+      );
 
       if (ResizeObserver._scrollListeners.length === 0) {
         document.removeEventListener(
           'scroll',
           ResizeObserver._handleScroll,
-          true
+          true,
         );
       }
     };
@@ -104,14 +107,16 @@ class ResizeObserver extends React.Component<Props> {
 
       subscribed = false;
 
-      ResizeObserver._resizeListeners
-        .splice(ResizeObserver._resizeListeners.indexOf(listener), 1);
+      ResizeObserver._resizeListeners.splice(
+        ResizeObserver._resizeListeners.indexOf(listener),
+        1,
+      );
 
       if (ResizeObserver._resizeListeners.length === 0) {
         window.removeEventListener(
           'resize',
           ResizeObserver._handleResize,
-          true
+          true,
         );
       }
     };
@@ -171,21 +176,21 @@ class ResizeObserver extends React.Component<Props> {
 
   _handleScroll(event: Event) {
     if (
-      (this.props.onPosition || this.props.onReflow || this.props.onResize) && (
-        this._globalScollTarget(event.target) ||
+      (this.props.onPosition || this.props.onReflow || this.props.onResize) &&
+      (this._globalScollTarget(event.target) ||
         this._refScrollTarget(event.target) ||
-        this._ancestorScollTarget(event.target)
-      )
+        this._ancestorScollTarget(event.target))
     ) {
       this._reflow();
     }
   }
 
   _globalScollTarget(target: EventTarget) {
-    return (this.props.onPosition || this.props.onReflow) && (
-      target === document ||
-      target === document.documentElement ||
-      target === document.body
+    return (
+      (this.props.onPosition || this.props.onReflow) &&
+      (target === document ||
+        target === document.documentElement ||
+        target === document.body)
     );
   }
 
@@ -206,8 +211,11 @@ class ResizeObserver extends React.Component<Props> {
   }
 
   _ancestorScollTarget(target: EventTarget) {
-    return (this.props.onPosition || this.props.onReflow) &&
-      this._node && isAncestor(this._node, target);
+    return (
+      (this.props.onPosition || this.props.onReflow) &&
+      this._node &&
+      isAncestor(this._node, target)
+    );
   }
 
   _reflow() {
@@ -220,8 +228,7 @@ class ResizeObserver extends React.Component<Props> {
       rect.height !== this._lastRect.height;
 
     const positionChanged =
-      rect.top !== this._lastRect.top ||
-      rect.left !== this._lastRect.left;
+      rect.top !== this._lastRect.top || rect.left !== this._lastRect.left;
 
     this._lastRect = rect;
 
@@ -264,16 +271,16 @@ class ResizeObserver extends React.Component<Props> {
       return (
         <div style={style} ref={this._handleRef}>
           <div ref={this._handleExpandRef} style={style}>
-            <div style={{...styleChild, width: 100000, height: 100000}}/>
+            <div style={{...styleChild, width: 100000, height: 100000}} />
           </div>
           <div ref={this._handleShrinkRef} style={style}>
-            <div style={{...styleChild, width: '200%', height: '200%'}}/>
+            <div style={{...styleChild, width: '200%', height: '200%'}} />
           </div>
         </div>
       );
     }
 
-    return <noscript ref={this._handleRef}/>;
+    return <noscript ref={this._handleRef} />;
   }
 }
 

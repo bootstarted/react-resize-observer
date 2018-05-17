@@ -1,5 +1,9 @@
 extends:
   - metalab
-  - metalab/react
+overrides:
+  -
+    files: "*.spec.js"
+    env:
+      jest: true
 env:
   browser: true
