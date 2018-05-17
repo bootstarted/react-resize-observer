@@ -2,6 +2,7 @@
   "name": "react-resize-observer",
   "version": "0.2.2",
   "author": "Izaak Schroeder <izaak.schroeder@gmail.com>",
+  "license": "(MIT OR CC0-1.0)",
   "contributors": [
     "Neal Granger <neal@nealg.com>"
   ],
@@ -9,10 +10,13 @@
     "react",
     "resize"
   ],
-  "main": "ResizeObserver.js",
+  "main": "lib/ResizeObserver.js",
+  "files": [
+    "lib"
+  ],
   "scripts": {
-    "clean": "./node_modules/.bin/rimraf ./*.js ./*.map",
-    "build": "./node_modules/.bin/babel --copy-files -s -d . src",
+    "clean": "./node_modules/.bin/rimraf ./*.js ./*.map ./lib",
+    "build": "./node_modules/.bin/babel --copy-files -s -d ./lib src",
     "prepublish": "npm run clean && npm run build",
     "test": "npm run lint && npm run flow",
     "flow": "./node_modules/.bin/flow .",
