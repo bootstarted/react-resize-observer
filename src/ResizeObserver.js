@@ -77,10 +77,12 @@ class ResizeObserver extends React.Component<Props> {
 
       subscribed = false;
 
-      ResizeObserver._scrollListeners.splice(
-        ResizeObserver._scrollListeners.indexOf(listener),
-        1,
-      );
+      Promise.resolve().then(() => {
+        ResizeObserver._scrollListeners.splice(
+          ResizeObserver._scrollListeners.indexOf(listener),
+          1,
+        );
+      });
 
       if (ResizeObserver._scrollListeners.length === 0) {
         document.removeEventListener(
@@ -106,10 +108,12 @@ class ResizeObserver extends React.Component<Props> {
 
       subscribed = false;
 
-      ResizeObserver._resizeListeners.splice(
-        ResizeObserver._resizeListeners.indexOf(listener),
-        1,
-      );
+      Promise.resolve().then(() => {
+        ResizeObserver._resizeListeners.splice(
+          ResizeObserver._resizeListeners.indexOf(listener),
+          1,
+        );
+      });
 
       if (ResizeObserver._resizeListeners.length === 0) {
         window.removeEventListener(
