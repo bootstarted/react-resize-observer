@@ -6,6 +6,14 @@
   "contributors": [
     "Neal Granger <neal@nealg.com>"
   ],
+  "homepage": "https://github.com/metalabdesign/react-resize-observer",
+  "bugs": {
+    "url": "https://github.com/metalabdesign/react-resize-observer/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/metalabdesign/react-resize-observer"
+  },
   "keywords": [
     "react",
     "resize"
