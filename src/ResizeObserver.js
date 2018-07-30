@@ -103,7 +103,7 @@ class ResizeObserver extends React.Component<Props> {
 
     ResizeObserver._resizeListeners.push(listener);
 
-    return function removeSResizeListener() {
+    return function removeResizeListener() {
       if (!subscribed) return;
 
       subscribed = false;
