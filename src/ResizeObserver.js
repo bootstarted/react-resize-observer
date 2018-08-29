@@ -46,125 +46,43 @@ export type Props = {
 
 class ResizeObserver extends React.Component<Props> {
   static displayName = 'ResizeObserver';
-  static _scrollListeners: Array<(event: Event) => mixed> = [];
-  static _resizeListeners: Array<(event: Event) => mixed> = [];
-
-  static _handleScroll(event: Event) {
-    const length = ResizeObserver._scrollListeners.length;
-    for (let i = 0; i < length; i++) {
-      ResizeObserver._scrollListeners[i].call(undefined, event);
-    }
-  }
-
-  static _handleResize(event: Event) {
-    const length = ResizeObserver._resizeListeners.length;
-    for (let i = 0; i < length; i++) {
-      ResizeObserver._resizeListeners[i].call(undefined, event);
-    }
-  }
-
-  static addScrollListener(listener: (event: Event) => mixed): () => void {
-    if (ResizeObserver._scrollListeners.length === 0) {
-      document.addEventListener('scroll', ResizeObserver._handleScroll, true);
-    }
-
-    let subscribed = true;
-
-    ResizeObserver._scrollListeners.push(listener);
-
-    return function removeScrollListener() {
-      if (!subscribed) return;
-
-      subscribed = false;
-
-      Promise.resolve().then(() => {
-        ResizeObserver._scrollListeners.splice(
-          ResizeObserver._scrollListeners.indexOf(listener),
-          1,
-        );
-      });
-
-      if (ResizeObserver._scrollListeners.length === 0) {
-        document.removeEventListener(
-          'scroll',
-          ResizeObserver._handleScroll,
-          true,
-        );
-      }
-    };
-  }
-
-  static addResizeListener(listener: (event: Event) => mixed): () => void {
-    if (ResizeObserver._resizeListeners.length === 0) {
-      window.addEventListener('resize', ResizeObserver._handleResize, true);
-    }
-
-    let subscribed = true;
-
-    ResizeObserver._resizeListeners.push(listener);
-
-    return function removeSResizeListener() {
-      if (!subscribed) return;
-
-      subscribed = false;
-
-      Promise.resolve().then(() => {
-        ResizeObserver._resizeListeners.splice(
-          ResizeObserver._resizeListeners.indexOf(listener),
-          1,
-        );
-      });
-
-      if (ResizeObserver._resizeListeners.length === 0) {
-        window.removeEventListener(
-          'resize',
-          ResizeObserver._handleResize,
-          true,
-        );
-      }
-    };
-  }
 
   _expandRef: HTMLElement | null = null;
   _shrinkRef: HTMLElement | null = null;
   _node: HTMLElement | null = null;
   _lastWidth: ?number;
   _lastHeight: ?number;
-  _removeResize: ?() => void;
-  _removeScroll: ?() => void;
   _lastRect: ClientRect;
 
   componentDidMount() {
     this._reflow();
 
-    this._removeScroll = ResizeObserver.addScrollListener(this._handleScroll);
+    window.addEventListener('scroll', this._handleScroll, true);
 
     if (this.props.onPosition || this.props.onReflow) {
-      this._removeResize = ResizeObserver.addResizeListener(this._reflow);
+      window.addEventListener('resize', this._reflow, true);
     }
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    if ((nextProps.onPosition || nextProps.onReflow) && !this._removeResize) {
-      this._removeResize = ResizeObserver.addResizeListener(this._reflow);
+    if (
+      (nextProps.onPosition || nextProps.onReflow) &&
+      !(this.props.onPosition || this.props.onReflow)
+    ) {
+      window.addEventListener('resize', this._reflow, true);
     } else if (
       !(nextProps.onPosition || nextProps.onReflow) &&
-      this._removeResize
+      (this.props.onPosition || this.props.onReflow)
     ) {
-      this._removeResize();
-      this._removeResize = null;
+      window.removeEventListener('resize', this._reflow, true);
     }
   }
 
   componentWillUnmount() {
-    if (this._removeScroll) {
-      this._removeScroll();
-      this._removeScroll = null;
-    }
+    window.removeEventListener('scroll', this._handleScroll, true);
 
-    if (this._removeResize) {
-      this._removeResize();
-      this._removeResize = null;
+    if (this.props.onPosition || this.props.onReflow) {
+      window.removeEventListener('resize', this._reflow, true);
     }
   }
 
