@@ -66,7 +66,7 @@ class ResizeObserver extends React.Component<Props> {
     }
   }
 
-  componentWillReceiveProps() {
+  componentDidUpdate() {
     if ((this.props.onPosition || this.props.onReflow) && !this._hasResize) {
       window.addEventListener('resize', this._reflow, true);
       this._hasResize = true;
