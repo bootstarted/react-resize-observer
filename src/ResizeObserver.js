@@ -53,6 +53,7 @@ class ResizeObserver extends React.Component<Props> {
   _lastWidth: ?number;
   _lastHeight: ?number;
   _lastRect: ClientRect;
+  _hasResize: boolean = false;
 
   componentDidMount() {
     this._reflow();
@@ -61,27 +62,27 @@ class ResizeObserver extends React.Component<Props> {
 
     if (this.props.onPosition || this.props.onReflow) {
       window.addEventListener('resize', this._reflow, true);
+      this._hasResize = true;
     }
   }
 
-  componentWillReceiveProps(nextProps: Props) {
-    if (
-      (nextProps.onPosition || nextProps.onReflow) &&
-      !(this.props.onPosition || this.props.onReflow)
-    ) {
+  componentWillReceiveProps() {
+    if ((this.props.onPosition || this.props.onReflow) && !this._hasResize) {
       window.addEventListener('resize', this._reflow, true);
+      this._hasResize = true;
     } else if (
-      !(nextProps.onPosition || nextProps.onReflow) &&
-      (this.props.onPosition || this.props.onReflow)
+      !(this.props.onPosition || this.props.onReflow) &&
+      this._hasResize
     ) {
       window.removeEventListener('resize', this._reflow, true);
+      this._hasResize = false;
     }
   }
 
   componentWillUnmount() {
     window.removeEventListener('scroll', this._handleScroll, true);
 
-    if (this.props.onPosition || this.props.onReflow) {
+    if (this._hasResize) {
       window.removeEventListener('resize', this._reflow, true);
     }
   }
