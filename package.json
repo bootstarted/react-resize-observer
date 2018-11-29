@@ -15,8 +15,10 @@
     "resize"
   ],
   "main": "lib/ResizeObserver.js",
+  "types": "typings/react-resize-observer.d.ts",
   "files": [
-    "lib"
+    "lib",
+    "typings"
   ],
   "scripts": {
     "clean": "./node_modules/.bin/rimraf ./*.js ./*.map ./lib",
